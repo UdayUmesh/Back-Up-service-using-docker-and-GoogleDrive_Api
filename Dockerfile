@@ -18,14 +18,14 @@
 FROM python:3.9-slim
 
 # Set the working directory
-#WORKDIR /app
 WORKDIR /app
 
-# Copy the script, requirements, token file, and credentials file
+# Copy the script, requirements, token file, credentials file, and last backup time file
 COPY backup.py .
 COPY requirements.txt .
 COPY token.pickle .
 COPY credentials.json .
+COPY last_backup_time.txt .
 
 # Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
