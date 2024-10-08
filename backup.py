@@ -1,364 +1,118 @@
-# import os
-# import time
-# import datetime
-# import json
-# import pickle
-# from google.oauth2.credentials import Credentials
-# from google_auth_oauthlib.flow import InstalledAppFlow
-# from google.auth.transport.requests import Request
-# from googleapiclient.discovery import build
-# from googleapiclient.http import MediaFileUpload
-
-# # Path to the directory you want to back up
-# BACKUP_DIR = 'C:\\Users\\Uday.U\\Desktop\\6thsem\\CC\\BackUpSerivce\\BackupFiles'
-
-# # Path to the Google Drive API credentials JSON file
-# CREDENTIALS_FILE = './credentials.json'
-
-# def backup_to_gdrive():
-#     creds = None
-
-#     if os.path.exists('token.pickle'):
-#         with open('token.pickle', 'rb') as token:
-#             creds = Credentials.from_authorized_user_info(info=json.load(token))
-
-#     if not creds or not creds.valid:
-#         flow = InstalledAppFlow.from_client_secrets_file(
-#             CREDENTIALS_FILE, ['https://www.googleapis.com/auth/drive.file'])
-#         creds = flow.run_local_server(port=0)
-
-#         with open('token.pickle', 'wb') as token:
-#             pickle.dump(creds, token)
-
-#     drive_service = build('drive', 'v3', credentials=creds)
-
-#     for filename in os.listdir(BACKUP_DIR):
-#         file_path = os.path.join(BACKUP_DIR, filename)
-#         file_metadata = {'name': filename}
-#         media = MediaFileUpload(file_path, resumable=True)
-#         drive_service.files().create(body=file_metadata, media_body=media, fields='id').execute()
-#         print(f'Backed up {filename} to Google Drive')
-
-#     print(f'Backup completed at {datetime.datetime.now()}')
-
-# if __name__ == '__main__':
-#     while True:
-#         backup_to_gdrive()
-#         time.sleep(3600)  # Wait for 1 hour (3600 seconds) before the next backup
-
-# import os
-# import time
-# import datetime
-# import json
-# import pickle
-# from google.oauth2.credentials import Credentials
-# from google_auth_oauthlib.flow import InstalledAppFlow
-# from google.auth.transport.requests import Request
-# from googleapiclient.discovery import build
-# from googleapiclient.http import MediaFileUpload
-
-# # Path to the directory you want to back up
-# BACKUP_DIR = 'C:\\Users\\Uday.U\\Desktop\\6thsem\\CC\\BackUpSerivce\\BackupFiles'
-
-# # Path to the Google Drive API credentials JSON file
-# CREDENTIALS_FILE = '/app/credentials.json'
-
-# # Path to the token.pickle file
-# TOKEN_FILE = os.path.join('/app', 'token.pickle')
-
-# def backup_to_gdrive():
-#     creds = None
-#     if os.path.exists(TOKEN_FILE):
-#         try:
-#             with open(TOKEN_FILE, 'rb') as token:
-#                 creds = Credentials.from_authorized_user_info(info=json.load(token))
-#         except (UnicodeDecodeError, FileNotFoundError):
-#             # Handle the case where the token.pickle file is not found or has expired credentials
-#             flow = InstalledAppFlow.from_client_secrets_file(
-#                 CREDENTIALS_FILE, ['https://www.googleapis.com/auth/drive.file'], 
-#                 redirect_uri='urn:ietf:wg:oauth:2.0:oob')
-#             creds = flow.run_console()
-#             with open(TOKEN_FILE, 'wb') as token:
-#                 pickle.dump(creds, token)
-#     else:
-#         # Handle the case where the token.pickle file is not found
-#         flow = InstalledAppFlow.from_client_secrets_file(
-#             CREDENTIALS_FILE, ['https://www.googleapis.com/auth/drive.file'], 
-#             redirect_uri='urn:ietf:wg:oauth:2.0:oob')
-#         creds = flow.run_console()
-#         with open(TOKEN_FILE, 'wb') as token:
-#             pickle.dump(creds, token)
-
-#     drive_service = build('drive', 'v3', credentials=creds)
-#     for filename in os.listdir(BACKUP_DIR):
-#         file_path = os.path.join(BACKUP_DIR, filename)
-#         file_metadata = {'name': filename}
-#         media = MediaFileUpload(file_path, resumable=True)
-#         drive_service.files().create(body=file_metadata, media_body=media, fields='id').execute()
-#         print(f'Backed up {filename} to Google Drive')
-#     print(f'Backup completed at {datetime.datetime.now()}')
-
-# if __name__ == '__main__':
-#     while True:
-#         backup_to_gdrive()
-#         time.sleep(3600)  # Wait for 1 hour (3600 seconds) before the next backup
-
-# import os
-# import time
-# import datetime
-# import json
-# import pickle
-# import webbrowser
-# from google.oauth2.credentials import Credentials
-# from google_auth_oauthlib.flow import InstalledAppFlow
-# from google.auth.transport.requests import Request
-# from googleapiclient.discovery import build
-# from googleapiclient.http import MediaFileUpload
-
-# # Path to the directory you want to back up
-# BACKUP_DIR = '/app/BackupFiles'
-# #BACKUP_DIR = 'C:\\Users\\Uday.U\\Desktop\\6thsem\\CC\\BackUpSerivce\\BackupFiles'
-
-# # Path to the Google Drive API credentials JSON file
-# CREDENTIALS_FILE = '/app/credentials.json'
-# #CREDENTIALS_FILE ='C:\\Users\\Uday.U\\Desktop\\6thsem\\CC\\BackUpSerivce\\credentials.json'
-# # Path to the token.pickle file
-# TOKEN_FILE = os.path.join('/app', 'token.pickle')
-# #TOKEN_FILE = 'C:\\Users\\Uday.U\\Desktop\\6thsem\\CC\\BackUpSerivce\\token.pickle'
-# # Path to the last backup time file
-# LAST_BACKUP_TIME_FILE = os.path.join('/app', 'last_backup_time.txt')
-# #LAST_BACKUP_TIME_FILE = 'C:\\Users\\Uday.U\\Desktop\\6thsem\\CC\\BackUpSerivce\\last_backup_time.txt'
-# # def get_last_backup_time():
-# #     if os.path.exists(LAST_BACKUP_TIME_FILE):
-# #         with open(LAST_BACKUP_TIME_FILE, 'r') as f:
-# #             return float(f.read())
-# #     else:
-# #         return 0
-# def get_last_backup_time():
-#     if os.path.exists(LAST_BACKUP_TIME_FILE) and os.path.getsize(LAST_BACKUP_TIME_FILE) > 0:
-#         with open(LAST_BACKUP_TIME_FILE, 'r') as f:
-#             try:
-#                 return float(f.read())
-#             except ValueError:
-#                 # Handle the case where the file contains invalid data
-#                 return 0
-#     else:
-#         # Handle the case where the file doesn't exist or is empty
-#         return 0
-
-# def update_last_backup_time(timestamp):
-#     with open(LAST_BACKUP_TIME_FILE, 'w') as f:
-#         f.write(str(timestamp))
-
-# def backup_to_gdrive():
-#     creds = get_credentials()
-#     drive_service = build('drive', 'v3', credentials=creds)
-#     last_backup_time = get_last_backup_time()
-
-#     for filename in os.listdir(BACKUP_DIR):
-#         file_path = os.path.join(BACKUP_DIR, filename)
-#         if os.path.getmtime(file_path) > last_backup_time:
-#             file_metadata = {'name': filename}
-#             media = MediaFileUpload(file_path, resumable=True)
-#             drive_service.files().create(body=file_metadata, media_body=media, fields='id').execute()
-#             print(f'Backed up {filename} to Google Drive')
-
-#     update_last_backup_time(time.time())
-#     print(f'Backup completed at {datetime.datetime.now()}')
-
-# def get_credentials():
-#     creds = None
-#     if os.path.exists(TOKEN_FILE):
-#         try:
-#             with open(TOKEN_FILE, 'rb') as token:
-#                 creds = Credentials.from_authorized_user_info(info=json.load(token))
-#         except (UnicodeDecodeError, FileNotFoundError):
-#             # Handle the case where the token.pickle file is not found or has expired credentials
-#             creds = refresh_credentials()
-#     else:
-#         # Handle the case where the token.pickle file is not found
-#         creds = refresh_credentials()
-#     return creds
-
-# def refresh_credentials():
-#     flow = InstalledAppFlow.from_client_secrets_file(
-#         CREDENTIALS_FILE, ['https://www.googleapis.com/auth/drive.file'],
-#         redirect_uri='urn:ietf:wg:oauth:2.0:oob')
-#     try:
-#         creds = flow.run_local_server(port=0)
-#     except webbrowser.Error:
-#         # Handle the case where the web browser cannot be located
-#         print("Could not locate a runnable web browser. Please authorize the application manually.")
-#         creds = flow.run_console()
-#     with open(TOKEN_FILE, 'wb') as token:
-#         pickle.dump(creds, token)
-#     return creds
-# # def get_credentials():
-# #     creds = None
-# #     if os.path.exists(TOKEN_FILE):
-# #         try:
-# #             with open(TOKEN_FILE, 'rb') as token:
-# #                 creds = Credentials.from_authorized_user_info(info=json.load(token))
-# #         except (UnicodeDecodeError, FileNotFoundError):
-# #             # Handle the case where the token.pickle file is not found or has expired credentials
-# #             flow = InstalledAppFlow.from_client_secrets_file(
-# #                 CREDENTIALS_FILE, ['https://www.googleapis.com/auth/drive.file'],
-# #                 redirect_uri='urn:ietf:wg:oauth:2.0:oob')
-# #             try:
-# #                 creds = flow.run_local_server(port=0)
-# #             except webbrowser.Error:
-# #                 # Handle the case where the web browser cannot be located
-# #                 print("Could not locate a runnable web browser. Please authorize the application manually.")
-# #                 creds = flow.run_console()
-# #             with open(TOKEN_FILE, 'wb') as token:
-# #                 pickle.dump(creds, token)
-# #     else:
-# #         # Handle the case where the token.pickle file is not found
-# #         flow = InstalledAppFlow.from_client_secrets_file(
-# #             CREDENTIALS_FILE, ['https://www.googleapis.com/auth/drive.file'],
-# #             redirect_uri='urn:ietf:wg:oauth:2.0:oob')
-# #         try:
-# #             creds = flow.run_local_server(port=0)
-# #         except webbrowser.Error:
-# #             # Handle the case where the web browser cannot be located
-# #             print("Could not locate a runnable web browser. Please authorize the application manually.")
-# #             creds = flow.run_console()
-# #         with open(TOKEN_FILE, 'wb') as token:
-# #             pickle.dump(creds, token)
-# #     return creds
-# # def get_credentials():
-# #     creds = None
-# #     if os.path.exists(TOKEN_FILE):
-# #         try:
-# #             with open(TOKEN_FILE, 'rb') as token:
-# #                 creds = Credentials.from_authorized_user_info(info=json.load(token))
-# #         except (UnicodeDecodeError, FileNotFoundError):
-# #             # Handle the case where the token.pickle file is not found or has expired credentials
-# #             flow = InstalledAppFlow.from_client_secrets_file(
-# #                 CREDENTIALS_FILE, ['https://www.googleapis.com/auth/drive.file'],
-# #                 redirect_uri='urn:ietf:wg:oauth:2.0:oob')
-# #             creds = flow.run_console()
-# #             with open(TOKEN_FILE, 'wb') as token:
-# #                 pickle.dump(creds, token)
-# #     else:
-# #         # Handle the case where the token.pickle file is not found
-# #         flow = InstalledAppFlow.from_client_secrets_file(
-# #             CREDENTIALS_FILE, ['https://www.googleapis.com/auth/drive.file'],
-# #             redirect_uri='urn:ietf:wg:oauth:2.0:oob')
-# #         creds = flow.run_console()
-# #         with open(TOKEN_FILE, 'wb') as token:
-# #             pickle.dump(creds, token)
-# #     return creds
-# # def get_credentials():
-# #     creds = None
-# #     if os.path.exists(TOKEN_FILE):
-# #         try:
-# #             with open(TOKEN_FILE, 'rb') as token:
-# #                 creds = Credentials.from_authorized_user_info(info=json.load(token))
-# #         except (UnicodeDecodeError, FileNotFoundError):
-# #             # Handle the case where the token.pickle file is not found or has expired credentials
-# #             flow = InstalledAppFlow.from_client_secrets_file(
-# #                 CREDENTIALS_FILE, ['https://www.googleapis.com/auth/drive.file'], 
-# #                 redirect_uri='urn:ietf:wg:oauth:2.0:oob')
-# #             creds = flow.run_local_server(port=0)
-# #             with open(TOKEN_FILE, 'wb') as token:
-# #                 pickle.dump(creds, token)
-# #     else:
-# #         # Handle the case where the token.pickle file is not found
-# #         flow = InstalledAppFlow.from_client_secrets_file(
-# #             CREDENTIALS_FILE, ['https://www.googleapis.com/auth/drive.file'], 
-# #             redirect_uri='urn:ietf:wg:oauth:2.0:oob')
-# #         creds = flow.run_local_server(port=0)
-# #         with open(TOKEN_FILE, 'wb') as token:
-# #             pickle.dump(creds, token)
-# #     return creds
-
-# if __name__ == '__main__':
-#     while True:
-#         backup_to_gdrive()
-#         time.sleep(3600)  # Wait for 1 hour (3600 seconds) before the next backup
-
-import os
-import time
-import datetime
-import json
-import pickle
-import webbrowser
-from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
-from google.auth.transport.requests import Request
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
+from google_auth_oauthlib.flow import InstalledAppFlow
+from google.auth.transport.requests import Request
+from google.oauth2.credentials import Credentials
+# from kubernetes import client, config
+import os
+import os.path
+import logging
 
-# Path to the directory you want to back up
-BACKUP_DIR = '/app/BackupFiles'
+import tkinter as tk
+from tkinter import messagebox
 
-# Path to the Google Drive API credentials JSON file
-CREDENTIALS_FILE = '/app/credentials.json'
+# def show_warning():
+    
 
-# Path to the token.pickle file
-TOKEN_FILE = os.path.join('/app', 'token.pickle')
+# Create a Tkinter window
 
-# Path to the last backup time file
-LAST_BACKUP_TIME_FILE = os.path.join('/app', 'last_backup_time.txt')
+# root.withdraw()  # Hide the root window
+# root.title("Warning Box Example")
 
-def get_last_backup_time():
-    if os.path.exists(LAST_BACKUP_TIME_FILE) and os.path.getsize(LAST_BACKUP_TIME_FILE) > 0:
-        with open(LAST_BACKUP_TIME_FILE, 'r') as f:
-            try:
-                return float(f.read())
-            except ValueError:
-                # Handle the case where the file contains invalid data
-                return 0
-    else:
-        # Handle the case where the file doesn't exist or is empty
-        return 0
+# Create a button to trigger the warning
+# warning_button = tk.Button(root, text="Show Warning", command=show_warning)
+# warning_button.pack(pady=20)
 
-def update_last_backup_time(timestamp):
-    with open(LAST_BACKUP_TIME_FILE, 'w') as f:
-        f.write(str(timestamp))
+# Run the Tkinter event loop
 
-def backup_to_gdrive():
-    creds = get_credentials()
-    drive_service = build('drive', 'v3', credentials=creds)
-    last_backup_time = get_last_backup_time()
 
-    for filename in os.listdir(BACKUP_DIR):
-        file_path = os.path.join(BACKUP_DIR, filename)
-        if os.path.getmtime(file_path) > last_backup_time:
-            file_metadata = {'name': filename}
-            media = MediaFileUpload(file_path, resumable=True)
-            drive_service.files().create(body=file_metadata, media_body=media, fields='id').execute()
-            print(f'Backed up {filename} to Google Drive')
 
-    update_last_backup_time(time.time())
-    print(f'Backup completed at {datetime.datetime.now()}')
 
-def get_credentials():
+
+logging.basicConfig(filename='backup.log', level=logging.INFO)
+def backup_data():
+    # Perform backup operation
+    logging.info('Backup operation started...')
+    # Your backup logic here
+    logging.info('Backup operation completed successfully.')
+
+
+
+SCOPES = ['https://www.googleapis.com/auth/drive.file']
+
+def authenticate():
+    """Authenticate the user and return the service."""
     creds = None
-    if os.path.exists(TOKEN_FILE):
-        try:
-            with open(TOKEN_FILE, 'rb') as token:
-                creds = pickle.load(token)
-        except (UnicodeDecodeError, FileNotFoundError):
-            # Handle the case where the token.pickle file is not found or has expired credentials
-            flow = InstalledAppFlow.from_client_secrets_file(
-                CREDENTIALS_FILE, ['https://www.googleapis.com/auth/drive.file'],
-                redirect_uri='urn:ietf:wg:oauth:2.0:oob')
-            creds = flow.run_local_server(port=0)
-            with open(TOKEN_FILE, 'wb') as token:
-                pickle.dump(creds, token)
-    else:
-        # Handle the case where the token.pickle file is not found
-        flow = InstalledAppFlow.from_client_secrets_file(
-            CREDENTIALS_FILE, ['https://www.googleapis.com/auth/drive.file'],
-            redirect_uri='urn:ietf:wg:oauth:2.0:oob')
-        creds = flow.run_local_server(port=0)
-        with open(TOKEN_FILE, 'wb') as token:
-            pickle.dump(creds, token)
-    return creds
+    # Check for existing saved credentials
+    if os.path.exists('token.json'):
+        creds = Credentials.from_authorized_user_file('token.json', SCOPES)
+    # If no valid credentials, let the user log in.
+    if not creds or not creds.valid:
+        if creds and creds.expired and creds.refresh_token:
+            try:
+                creds.refresh(Request())
+            except Exception as e:
+                print(f"Error refreshing access token: {e}")
+                creds = None
+        if not creds:
+            try:
+                flow = InstalledAppFlow.from_client_secrets_file(
+                    'client_secret_423125146127-tq4sk6ie5mnium37p3micacnjeeeci96.apps.googleusercontent.com.json', SCOPES)  # Ensure this is the correct path to your client secret file
+                creds = flow.run_local_server(port=8080)
+                with open('token.json', 'w') as token:
+                    token.write(creds.to_json())
+            except Exception as e:
+                print(f"Failed to retrieve new token: {e}")
+                exit(1)
+    service = build('drive', 'v3', credentials=creds)
+    return service
+
+
+def upload_file(service, file_path, file_name, mime_type, parent_folder_id=None):
+    """Uploads a file to Google Drive."""
+    try:
+        file_metadata = {'name': file_name}
+        if parent_folder_id:
+            file_metadata['parents'] = [parent_folder_id]
+        media = MediaFileUpload(file_path, mimetype=mime_type)
+        file = service.files().create(body=file_metadata, media_body=media, fields='id').execute()
+        print(f"File ID: {file.get('id')}")
+    except Exception as e:
+        print(f"Failed to upload file: {e}")
+        # root = tk.Tk()
+        # # root.withdraw()  # Hide the root window
+        # messagebox.showwarning("error!","Failed to upload file: {e}")
+        # root.mainloop()
+        # root.destroy()
+
+
+def upload_folder(service, folder_path, parent_folder_id=None):
+    """Uploads a folder and its contents to Google Drive."""
+    try:
+        folder_name = os.path.basename(folder_path)
+        folder_metadata = {'name': folder_name, 'mimeType': 'application/vnd.google-apps.folder'}
+        if parent_folder_id:
+            folder_metadata['parents'] = [parent_folder_id]
+        folder = service.files().create(body=folder_metadata, fields='id').execute()
+        print(f"Folder ID: {folder.get('id')}")
+
+
+        for item in os.listdir(folder_path):
+            item_path = os.path.join(folder_path, item)
+            if os.path.isfile(item_path):
+                upload_file(service, item_path, item, mime_type='application/octet-stream', parent_folder_id=folder['id'])
+            elif os.path.isdir(item_path):
+                upload_folder(service, item_path, parent_folder_id=folder['id'])
+    except Exception as e:
+        print(f"Failed to upload folder: {e}")
+
+
+def main():
+    service = authenticate()
+    backup_data()
+    # upload_file(service, 'test.txt', 'test.txt', 'text/plain')
+    # upload_file(service, 'AFX.png', 'AFX.png', 'image/png') 
+    upload_folder(service, 'testfolder')
 
 if __name__ == '__main__':
-    while True:
-        backup_to_gdrive()
-        time.sleep(60)  # Wait for 1 hour (3600 seconds) before the next backup
+    main()
