@@ -1,0 +1,9 @@
+C:\Users\varun\Desktop\PES1UG21CS216_PES1UG21CS232_PES1UG21CS245_PES1UG21CS249_Back-Up-service-using-docker-and-Kubernetes-main>kubectl create secret generic google-credentials --from-file=client_secret_912153419985-mulrp66u9s4qrcfshb5nmc80sj4d1vqu.apps.googleusercontent.com.json=C:\Users\varun\Desktop\PES1UG21CS216_PES1UG21CS232_PES1UG21CS245_PES1UG21CS249_Back-Up-service-using-docker-and-Kubernetes-main>
+
+kubectl describe secret google-credentials
+
+kubectl get secret google-credentials -o yaml
+
+kubectl apply -f backup_cronjob.yaml
+
+
